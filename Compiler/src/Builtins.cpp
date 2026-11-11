@@ -10,6 +10,7 @@
 LUAU_FASTFLAGVARIABLE(LuauIntegerFastcalls)
 LUAU_FASTFLAGVARIABLE(LuauIntegerBufferFastcalls)
 LUAU_FASTFLAGVARIABLE(LuauCompileTableBuiltinsCreateClear)
+LUAU_FASTFLAGVARIABLE(LuauCompileCoroutineRunning)
 
 namespace Luau
 {
@@ -230,6 +231,12 @@ static int getBuiltinFunctionId(const Builtin& builtin, const CompileOptions& op
             return LBF_TABLE_CREATE;
         if (FFlag::LuauCompileTableBuiltinsCreateClear && builtin.method == "clear")
             return LBF_TABLE_CLEAR;
+    }
+
+    if (FFlag::LuauCompileCoroutineRunning && builtin.object == "coroutine")
+    {
+        if (builtin.method == "running")
+            return LBF_COROUTINE_RUNNING;
     }
 
     if (builtin.object == "buffer")
@@ -614,6 +621,9 @@ BuiltinInfo getBuiltinInfo(int bfid)
 
     case LBF_TABLE_CLEAR:
         return {1, 0};
+
+    case LBF_COROUTINE_RUNNING:
+        return {0, 1};
 
     case LBF_VECTOR:
         return {-1, 1}; // 3 or 4 parameters in some configurations

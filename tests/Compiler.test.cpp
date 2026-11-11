@@ -41,6 +41,7 @@ LUAU_FASTFLAG(LuauExperimentalIfLocalSyntax)
 LUAU_FASTFLAG(LuauCompileNoFoldVectorEqW)
 LUAU_FASTFLAG(LuauCompileReuseLocalRegs)
 LUAU_FASTFLAG(LuauCompileTableBuiltinsCreateClear)
+LUAU_FASTFLAG(LuauCompileCoroutineRunning)
 LUAU_FASTFLAG(LuauCompileReuseLowersLimit)
 LUAU_FASTFLAG(LuauExperimentalWhileLocalSyntax)
 
@@ -14118,6 +14119,36 @@ MOVE R2 R0
 GETIMPORT R1 2 [table.clear]
 CALL R1 1 0
 L0: RETURN R0 0
+)"
+    );
+}
+
+TEST_CASE("CoroutineRunningFastcall")
+{
+    ScopedFastFlag luauCompileCoroutineRunning{FFlag::LuauCompileCoroutineRunning, true};
+
+    CHECK_EQ(
+        "\n" + compileFunction0(R"(
+return coroutine.running()
+)"),
+        R"(
+FASTCALL 135 L0
+GETIMPORT R0 2 [coroutine.running]
+CALL R0 0 -1
+L0: RETURN R0 -1
+)"
+    );
+
+    CHECK_EQ(
+        "\n" + compileFunction0(R"(
+local co = coroutine.running()
+return co
+)"),
+        R"(
+FASTCALL 135 L0
+GETIMPORT R0 2 [coroutine.running]
+CALL R0 0 1
+L0: RETURN R0 1
 )"
     );
 }

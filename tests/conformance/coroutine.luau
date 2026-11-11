@@ -843,4 +843,29 @@ do
     assert(all[3][1] == "cancelled")
 end
 
+-- coroutine.running fastcall: result counts and running thread identity
+do
+  assert(coroutine.running() == nil)
+  assert(select('#', coroutine.running()) == 1)
+
+  local co
+  co = coroutine.create(function(...)
+    local a = coroutine.running()
+    local t = {coroutine.running()}
+    coroutine.running() -- results discarded
+    local inner = coroutine.wrap(function() return coroutine.running() end)()
+    return a, t[1], #t, select('#', coroutine.running()), inner
+  end)
+
+  local ok, a, b, n, m, inner = coroutine.resume(co)
+  assert(ok and a == co and b == co and n == 1 and m == 1)
+  assert(type(inner) == "thread" and inner ~= co)
+end
+
+-- NOTE: getfenv breaks fastcalls for the remainder of the source, so this must stay at the end
+do
+  getfenv().coroutine = { running = function() return "replaced" end }
+  assert(coroutine.running() == "replaced")
+end
+
 return 'OK'

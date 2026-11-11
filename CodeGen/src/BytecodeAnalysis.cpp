@@ -246,6 +246,7 @@ static void applyBuiltinCall(LuauBuiltinFunction bfid, BytecodeTypes& types)
     {
     case LBF_NONE:
     case LBF_ASSERT:
+    case LBF_COROUTINE_RUNNING: // thread or nil
         types.result = LBC_TYPE_ANY;
         break;
     case LBF_MATH_ABS:

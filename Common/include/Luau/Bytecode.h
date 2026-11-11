@@ -800,6 +800,9 @@ enum LuauBuiltinFunction
     // table.create / table.clear
     LBF_TABLE_CREATE,
     LBF_TABLE_CLEAR,
+
+    // coroutine.running
+    LBF_COROUTINE_RUNNING,
 };
 
 // Capture type, used in LOP_CAPTURE

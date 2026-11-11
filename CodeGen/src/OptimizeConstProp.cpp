@@ -1599,6 +1599,7 @@ static void handleBuiltinEffects(ConstPropState& state, LuauBuiltinFunction bfid
         state.invalidateHeap();
         return; // table.clear does not modify result registers.
     case LBF_TABLE_CREATE:
+    case LBF_COROUTINE_RUNNING:
         break;
     case LBF_RAWSET:
         state.invalidateHeap();

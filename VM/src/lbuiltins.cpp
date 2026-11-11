@@ -2608,6 +2608,21 @@ static int luauF_tableclear(lua_State* L, StkId res, TValue* arg0, int nresults,
     return -1;
 }
 
+static int luauF_corunning(lua_State* L, StkId res, TValue* arg0, int nresults, StkId args, int nparams)
+{
+    if (nresults <= 1)
+    {
+        // no luaC_threadbarrier: the running thread is never black
+        if (L == L->global->mainthread)
+            setnilvalue(res); // main thread is not a coroutine
+        else
+            setthvalue(L, res, L);
+        return 1;
+    }
+
+    return -1;
+}
+
 const luau_FastFunction luauF_table[256] = {
     NULL,
     luauF_assert,
@@ -2786,6 +2801,8 @@ const luau_FastFunction luauF_table[256] = {
 
     luauF_tablecreate,
     luauF_tableclear,
+
+    luauF_corunning,
 
 // When adding builtins, add them above this line; what follows is 64 "dummy" entries with luauF_missing fallback.
 // This is important so that older versions of the runtime that don't support newer builtins automatically fall back via luauF_missing.

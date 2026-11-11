@@ -82,6 +82,7 @@ LUAU_FASTFLAG(LuauExperimentalIfLocalSyntax)
 LUAU_FASTFLAG(LuauSandboxFreezesVectorMetatable)
 LUAU_FASTFLAG(LuauBufferCage)
 LUAU_FASTFLAG(LuauCoroutineFinally)
+LUAU_FASTFLAG(LuauCompileCoroutineRunning)
 LUAU_FASTFLAG(LuauCoroutineFinallyAnalysis)
 LUAU_FASTFLAG(LuauCodegenDseTrackTagInvalidation)
 LUAU_FASTFLAG(LuauCodegenCmpAnySideEffecting)
@@ -1665,6 +1666,7 @@ TEST_CASE("UTF8")
 TEST_CASE("Coroutine")
 {
     ScopedFastFlag luauCoroutineFinally{FFlag::LuauCoroutineFinally, true};
+    ScopedFastFlag luauCompileCoroutineRunning{FFlag::LuauCompileCoroutineRunning, true};
 
     runConformance("coroutine.luau");
 }
